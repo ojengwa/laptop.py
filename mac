@@ -187,7 +187,7 @@ gem update --system
 printf "Install the docker container (y/N): "
 READ $CHOICE
 
-if ["$CHOICE" = 'y']; then
+if [ "$CHOICE" = 'y' ]; then
   brew_install_or_upgrade 'docker'
 fi
 
