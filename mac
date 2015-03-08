@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# Welcome to the thoughtbot laptop script!
+# Welcome to the andela laptop script!
 # Be prepared to turn your laptop (or desktop, no haters here)
 # into an awesome development machine.
 
@@ -113,6 +113,16 @@ gem_install_or_update() {
   fi
 }
 
+pip_install_or_update() {
+  if pip freeze list --outdated | grep "$1" ; then
+    fancy_echo "Updating %s ..." "$1"
+    pip install --upgrade "$@"
+  else
+    fancy_echo "Installing %s ..." "$1"
+    pip install "$@"
+  fi
+}
+
 if ! command -v brew >/dev/null; then
   fancy_echo "Installing Homebrew ..."
     curl -fsS \
@@ -174,7 +184,15 @@ rbenv shell "$ruby_version"
 
 gem update --system
 
+printf "Install the docker container (y/N): "
+READ $CHOICE
+
+if ["$CHOICE" = 'y']; then
+  brew_install_or_upgrade 'docker'
+fi
+
 gem_install_or_update 'bundler'
+pip_install_or_update 'pip'
 
 fancy_echo "Configuring Bundler ..."
   number_of_cores=$(sysctl -n hw.ncpu)

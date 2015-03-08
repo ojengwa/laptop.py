@@ -119,7 +119,7 @@ Credits
 -------
 
 
-laptop.py is maintained and funded by [Bernard Ojengwa](http://bernard.com.ng).
+laptop.py is maintained by [Bernard Ojengwa](http://bernard.com.ng).
 
 Thank you, [contributors](https://github.com/andela-bojengwa/laptop.py/graphs/contributors)!
 
