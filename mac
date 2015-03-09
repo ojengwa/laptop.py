@@ -155,9 +155,7 @@ brew_install_or_upgrade 'tmux'
 brew_install_or_upgrade 'reattach-to-user-namespace'
 brew_install_or_upgrade 'imagemagick'
 brew_install_or_upgrade 'qt'
-brew_install_or_upgrade 'hub'
-brew_install_or_upgrade 'foreman'
-brew_install_or_upgrade 'bash-completion'
+brew_install_or_upgrade 'hub'brew_install_or_upgrade 'bash-completion'
 brew_install_or_upgrade 'chromedriver'
 brew_install_or_upgrade 'zsh-completions'
 brew_install_or_upgrade 'zsh-syntax-highlighting'
@@ -175,6 +173,7 @@ brew_install_or_upgrade 'libyaml'
 fancy_echo 'Installing the Python package manager pip'
 curl --silent --show-error --retry 5 https://bootstrap.pypa.io/get-pip.py | python2.7
 
+pip_install_or_update 'foreman'
 
 # Configuration options for cloud based services
 printf "Which of the following cloud service(s) do you which to configure: \n
