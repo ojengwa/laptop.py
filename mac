@@ -314,14 +314,14 @@ for CHOICE in $CHOICES ; do
 done
 
 printf "Install the Google Chrome (y/N): "
-READ $CHOICE
+READ CHOICE
 
 if [ "$CHOICE" = 'y' ]; then
   brew_cask_install 'google-chrome'
 fi
 
 printf "Install the docker container (y/N): "
-READ $CHOICE
+READ CHOICE
 
 if [ "$CHOICE" = 'y' ]; then
   brew_install_or_upgrade 'docker'
@@ -335,7 +335,7 @@ fi
 
 
 printf "Do you want to configure your docker container now (y/N): "
-READ $CHOICE
+READ CHOICE
 
 if [ "$CHOICE" = 'y' ]; then
   fancy_echo 'What name would your want for four container: '
