@@ -353,3 +353,7 @@ fi
 if [ -f "$HOME/.laptop.local" ]; then
   . "$HOME/.laptop.local"
 fi
+fancy_echo "Your super machine have being made more awesome!
+You can always run this script again to install components your skipped during this installation.
+Installed packages will be ignored!
+enjoy :)"
