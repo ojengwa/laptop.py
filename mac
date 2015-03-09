@@ -146,8 +146,7 @@ fancy_echo "Updating Homebrew formulas ..."
 brew update
 
 brew_install_or_upgrade 'git'
-brew_install_or_upgrade 'postgres'
-brew_launchctl_restart 'postgresql'
+brew_install_or_upgrade 'curl'
 brew_install_or_upgrade 'redis'
 brew_install_or_upgrade 'the_silver_searcher'
 brew_install_or_upgrade 'vim'
@@ -158,17 +157,14 @@ brew_install_or_upgrade 'imagemagick'
 brew_install_or_upgrade 'qt'
 brew_install_or_upgrade 'hub'
 brew_install_or_upgrade 'node'
+brew_install_or_upgrade 'foreman'
 brew_install_or_upgrade 'bash-completion'
-brew_install_or_upgrade 'brew-pip'
-brew_install_or_upgrade 'fabric'
 brew_install_or_upgrade 'chromedriver'
-brew_install_or_upgrade 'pyenv-virtualenvwrapper'
 brew_install_or_upgrade 'zsh-completions'
 brew_install_or_upgrade 'zsh-syntax-highlighting'
 brew_install_or_upgrade 'caskroom/cask/brew-cask'
-
-brew_install_or_upgrade 'rbenv'
-brew_install_or_upgrade 'ruby-build'
+brew_install_or_upgrade 'redis'
+brew_install_or_upgrade 'hiredis'
 
 # shellcheck disable=SC2016
 append_to_zshrc 'eval "$(rbenv init - zsh --no-rehash)"' 1
@@ -177,26 +173,145 @@ brew_install_or_upgrade 'openssl'
 brew unlink openssl && brew link openssl --force
 brew_install_or_upgrade 'libyaml'
 
-ruby_version="$(curl -sSL http://ruby.thoughtbot.com/latest)"
+fancy_echo 'Installing the Python package manager pip'
+curl --silent --show-error --retry 5 https://bootstrap.pypa.io/get-pip.py | python2.7
 
-eval "$(rbenv init - zsh)"
 
-if ! rbenv versions | grep -Fq "$ruby_version"; then
-  rbenv install -s "$ruby_version"
-fi
+# Configuration options for cloud based services
+printf "Which of the following cloud service(s) do you which to configure: \n
+1. Google App Engine
+2. IBM Bluemix
+3. Heroku
+4. Amazon AWS
+\nSelect all the number(s) that applies, seperated by a space: "
 
-rbenv global "$ruby_version"
-rbenv shell "$ruby_version"
-
-gem update --system
-
-fancy_echo "Which of the following cloud service(s) do you which to configure: \n 1. Google App Engine \n 2. IBM Bluemix \n 3. Heroku \n 4. Amazon AWS \n Select all that applies, seperated by a space."
-READ $CHOICES
-
-for CHOICE in $CHOICES; do
+read CHOICES
+for CHOICE in $CHOICES ; do
   #statements
-  brew_install_or_upgrade $CHOICE
+  if [[ "$CHOICE" = 1 ]]; then
+      fancy_echo 'Installing Google Cloud Utilities'
+
+      brew_install_or_upgrade 'google-app-engine'
+
+      curl https://sdk.cloud.google.com | bash
+      brew_install_or_upgrade 'gcloud-zsh-completion'
+      pip_install_or_update 'gcloud'
+
+  elif [[ "$CHOICE" = 2 ]]; then
+    fancy_echo 'Installing Cloud Foundry CLI tools'
+    brew_install_or_upgrade 'cf'
+
+  elif [[ "$CHOICE" = 3 ]]; then
+    brew_install_or_upgrade 'heroku-toolbelt'
+
+  elif [[ "$CHOICE" = 4 ]]; then
+    brew_install_or_upgrade 'aws-elasticbeanstalk'
+
+    fancy_echo "Installing Kubernetes CLI tools"
+    brew_install_or_upgrade 'kubernetes-cli'
+    brew_install_or_upgrade 'awscli'
+  else
+    break
+  fi
 done
+
+# Configuration options for Relational databases
+printf "Which of the following cloud service(s) do you which to configure: \n
+1. Postgres (Recommended)
+2. MySQL
+3. MariaDB
+\nSelect all the number(s) that applies, seperated by a space: "
+
+read CHOICES
+for CHOICE in $CHOICES ; do
+  #statements
+  if [[ "$CHOICE" = 1 ]]; then
+    fancy_echo 'Installing the Postgres Database'
+    brew_install_or_upgrade 'postgres'
+    brew_launchctl_restart 'postgresql'
+  elif [[ "$CHOICE" = 2 ]]; then
+    fancy_echo 'Installing MySQL Database'
+    brew_install_or_upgrade 'mysql'
+
+  elif [[ "$CHOICE" = 3 ]]; then
+    fancy_echo 'Installing MariaDB Database'
+    brew_install_or_upgrade 'mariadb'
+
+  else
+    fancy_echo 'Skipping Relational database installation'
+    break
+  fi
+done
+
+# Configuration options for Document-based databases
+printf "Which of the following NoSQL databases do you which to configure: \n
+1. MongoDB (Recommended)
+2. CouchDB
+3. OrientDB
+4. ArrangoDB
+5. DynamoDB
+6. RethinkDB
+\nSelect all the number(s) that applies, seperated by a space: "
+
+read CHOICES
+for CHOICE in $CHOICES ; do
+  #statements
+  if [[ "$CHOICE" = 1 ]]; then
+    fancy_echo 'Installing the MondoDB'
+    brew_install_or_upgrade 'mongodb'
+  elif [[ "$CHOICE" = 2 ]]; then
+    fancy_echo 'Installing CouchDB'
+    brew_install_or_upgrade 'couchdb'
+
+  elif [[ "$CHOICE" = 3 ]]; then
+    fancy_echo 'Installing OrientDB'
+    brew_install_or_upgrade 'orientdb'
+
+  elif [[ "$CHOICE" = 4 ]]; then
+    fancy_echo 'Installing ArrangoDB'
+    brew_install_or_upgrade 'arrangodb'
+
+  elif [[ "$CHOICE" = 5 ]]; then
+    fancy_echo 'Installing DynamoDB'
+    brew_install_or_upgrade 'dynamodb-local'
+
+  elif [[ "$CHOICE" = 6 ]]; then
+    fancy_echo 'Installing RethinkDB'
+    brew_install_or_upgrade 'rethinkdb'
+
+  else
+    fancy_echo 'Skipping NoSQL database installation'
+    break
+  fi
+done
+
+# Configuration options for Memched Datastore
+printf "Which of the following Task queues do you which to configure: \n
+1. RabbitMQ (Recommended)
+2. ZeroMQ
+3. ActiveMQ
+\nSelect all the number(s) that applies, seperated by a space: "
+
+read CHOICES
+for CHOICE in $CHOICES ; do
+  #statements
+  if [[ "$CHOICE" = 1 ]]; then
+    fancy_echo 'Installing the RabbitMQ'
+    brew_install_or_upgrade 'rabbitmq'
+  elif [[ "$CHOICE" = 2 ]]; then
+    fancy_echo 'Installing ZeroMQ'
+    brew_install_or_upgrade 'zeromq'
+
+  elif [[ "$CHOICE" = 3 ]]; then
+    fancy_echo 'Installing ActiveMQ'
+    brew_install_or_upgrade 'activemq'
+
+  else
+    fancy_echo 'Skipping NoSQL database installation'
+    break
+  fi
+done
+
 printf "Install the Google Chrome (y/N): "
 READ $CHOICE
 
@@ -209,21 +324,30 @@ READ $CHOICE
 
 if [ "$CHOICE" = 'y' ]; then
   brew_install_or_upgrade 'docker'
+  brew_install_or_upgrade 'boot2docker'
 fi
-
-gem_install_or_update 'bundler'
-pip_install_or_update 'pip'
-
-fancy_echo "Configuring Bundler ..."
-  number_of_cores=$(sysctl -n hw.ncpu)
-  bundle config --global jobs $((number_of_cores - 1))
-
-brew_install_or_upgrade 'heroku-toolbelt'
 
 if ! command -v rcup >/dev/null; then
   brew_tap 'thoughtbot/formulae'
   brew_install_or_upgrade 'rcm'
 fi
+
+
+printf "Do you want to configure your docker container now (y/N): "
+READ $CHOICE
+
+if [ "$CHOICE" = 'y' ]; then
+  fancy_echo 'What name would your want for four container: '
+  read name
+  if [[ "$#" -ne 1 ]]; then
+    boot2docker init
+  else
+    boot2docker init --vm "$name"
+  fi
+  boot2docker start
+  $(boot2docker shellinit)
+fi
+
 
 if [ -f "$HOME/.laptop.local" ]; then
   . "$HOME/.laptop.local"
