@@ -148,6 +148,7 @@ brew update
 brew_install_or_upgrade 'git'
 brew_install_or_upgrade 'curl'
 brew_install_or_upgrade 'redis'
+brew_launchctl_restart 'redis'
 brew_install_or_upgrade 'the_silver_searcher'
 brew_install_or_upgrade 'vim'
 brew_install_or_upgrade 'ctags'
@@ -161,6 +162,9 @@ brew_install_or_upgrade 'chromedriver'
 brew_install_or_upgrade 'zsh-completions'
 brew_install_or_upgrade 'zsh-syntax-highlighting'
 brew_install_or_upgrade 'hiredis'
+brew_install_or_upgrade 'rbenv'
+brew_install_or_upgrade 'ruby-build'
+
 
 # shellcheck disable=SC2016
 append_to_zshrc 'eval "$(rbenv init - zsh --no-rehash)"' 1
@@ -172,7 +176,7 @@ brew_install_or_upgrade 'libyaml'
 fancy_echo 'Installing the Python package manager pip'
 curl --silent --show-error --retry 5 https://bootstrap.pypa.io/get-pip.py | python2.7
 
-pip_install_or_update 'foreman'
+gem install 'foreman'
 
 # Configuration options for cloud based services
 printf "Which of the following cloud service(s) do you which to configure: \n
