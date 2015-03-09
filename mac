@@ -160,7 +160,6 @@ brew_install_or_upgrade 'bash-completion'
 brew_install_or_upgrade 'chromedriver'
 brew_install_or_upgrade 'zsh-completions'
 brew_install_or_upgrade 'zsh-syntax-highlighting'
-brew_cask_install 'caskroom/cask/brew-cask'
 brew_install_or_upgrade 'hiredis'
 
 # shellcheck disable=SC2016
