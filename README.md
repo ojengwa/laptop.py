@@ -115,7 +115,7 @@ laptop.py is maintained by [Bernard Ojengwa](http://bernard.com.ng).
 
 Thank you, [contributors](https://github.com/andela-bojengwa/laptop.py/graphs/contributors)!
 
-Special thanks to ![thoughtbot](http://thoughtbot.com/assets/tm/logo.png) for the awesome tool, laptop
+Special thanks to [thoughtbot](http://thoughtbot.com/) for the awesome tool, laptop
 
 Contributing
 ------------
