@@ -6,7 +6,6 @@
 
 fancy_echo() {
   local fmt="$1"; shift
-
   # shellcheck disable=SC2059
   printf "\n$fmt\n" "$@"
 }
@@ -120,10 +119,10 @@ gem_install_or_update() {
 pip_install_or_update() {
   if pip freeze list | grep "$1" ; then
     fancy_echo "Updating %s ..." "$1"
-    pip install --upgrade "$@"
+    sudo pip install --upgrade "$@"
   else
     fancy_echo "Installing %s ..." "$1"
-    pip install "$@"
+    sudo pip install "$@"
   fi
 }
 
@@ -146,7 +145,7 @@ fancy_echo "Updating Homebrew formulas ..."
 brew update
 
 brew_install_or_upgrade 'git'
-brew_install_or_upgrade 'curl'
+brew_install_or_upgrade 'wget'
 brew_install_or_upgrade 'redis'
 brew_launchctl_restart 'redis'
 brew_install_or_upgrade 'the_silver_searcher'
@@ -163,7 +162,11 @@ brew_install_or_upgrade 'zsh-completions'
 brew_install_or_upgrade 'zsh-syntax-highlighting'
 brew_install_or_upgrade 'hiredis'
 brew_install_or_upgrade 'rbenv'
+brew_install_or_upgrade 'node'
+brew_install_or_upgrade 'npm'
+brew_install_or_upgrade 'nodenv'
 brew_install_or_upgrade 'ruby-build'
+brew_install_or_upgrade 'fabric'
 
 
 # shellcheck disable=SC2016
@@ -176,7 +179,13 @@ brew_install_or_upgrade 'libyaml'
 fancy_echo 'Installing the Python package manager pip'
 curl --silent --show-error --retry 5 https://bootstrap.pypa.io/get-pip.py | python2.7
 
+
+pip_install_or_update "pillow"
+pip_install_or_update "hiredis"
+pip_install_or_update "virtualenvwrapper"
+
 gem install 'foreman'
+gem install 'puppet'
 
 # Configuration options for cloud based services
 printf "Which of the following cloud service(s) do you which to configure: \n
@@ -195,8 +204,7 @@ for CHOICE in $CHOICES ; do
       brew_install_or_upgrade 'google-app-engine'
 
       curl https://sdk.cloud.google.com | bash
-      brew_install_or_upgrade 'gcloud-zsh-completion'
-      pip_install_or_update 'gcloud'
+      # pip_install_or_update 'gcloud'
 
   elif [[ "$CHOICE" = 2 ]]; then
     fancy_echo 'Installing Cloud Foundry CLI tools'
@@ -210,6 +218,7 @@ for CHOICE in $CHOICES ; do
 
     fancy_echo "Installing Kubernetes CLI tools"
     brew_install_or_upgrade 'kubernetes-cli'
+    fancy_echo "Installing AWS CLI tools"
     brew_install_or_upgrade 'awscli'
   else
     break
@@ -217,7 +226,7 @@ for CHOICE in $CHOICES ; do
 done
 
 # Configuration options for Relational databases
-printf "Which of the following cloud service(s) do you which to configure: \n
+printf "Which of the following Relational DBs do you which to configure: \n
 1. Postgres (Recommended)
 2. MySQL
 3. MariaDB
@@ -230,13 +239,15 @@ for CHOICE in $CHOICES ; do
     fancy_echo 'Installing the Postgres Database'
     brew_install_or_upgrade 'postgres'
     brew_launchctl_restart 'postgresql'
+    pip_install_or_update "psycopg2"
   elif [[ "$CHOICE" = 2 ]]; then
     fancy_echo 'Installing MySQL Database'
     brew_install_or_upgrade 'mysql'
-
+    pip_install_or_update 'mysql-python'
   elif [[ "$CHOICE" = 3 ]]; then
     fancy_echo 'Installing MariaDB Database'
     brew_install_or_upgrade 'mariadb'
+    pip_install_or_update 'mysql-python'
 
   else
     fancy_echo 'Skipping Relational database installation'
@@ -260,6 +271,9 @@ for CHOICE in $CHOICES ; do
   if [[ "$CHOICE" = 1 ]]; then
     fancy_echo 'Installing the MondoDB'
     brew_install_or_upgrade 'mongodb'
+    pip_install_or_update 'PyMongo'
+    fancy_echo 'Installing MongoEngine ORM...'
+    pip_install_or_update 'mongoengine'
   elif [[ "$CHOICE" = 2 ]]; then
     fancy_echo 'Installing CouchDB'
     brew_install_or_upgrade 'couchdb'
@@ -288,8 +302,8 @@ done
 
 # Configuration options for Memched Datastore
 printf "Which of the following Task queues do you which to configure: \n
-1. RabbitMQ (Recommended)
-2. ZeroMQ
+1. RabbitMQ
+2. ZeroMQ (Recommended)
 3. ActiveMQ
 \nSelect all the number(s) that applies, seperated by a space: "
 
@@ -308,7 +322,7 @@ for CHOICE in $CHOICES ; do
     brew_install_or_upgrade 'activemq'
 
   else
-    fancy_echo 'Skipping NoSQL database installation'
+    fancy_echo 'Skipping Datastore installation'
     break
   fi
 done
@@ -326,6 +340,16 @@ READ CHOICE
 if [ "$CHOICE" = 'y' ]; then
   brew_install_or_upgrade 'docker'
   brew_install_or_upgrade 'boot2docker'
+  brew_install_or_upgrade 'docker-compose'
+  fancy_echo "Do you want a GUI tools for managing your Docker containers (y/N): "
+  read INPUT
+  if [[ "$INPUT" = 'y' ]]; then
+    #statements
+    brew_install_or_upgrade 'unzip'
+    curl -O http://files.bernard.com.ng/Kitematic.zip
+    unzip kitematic.zip
+    mv ./Kitematic\ \(Beta\).app ~/Applications
+  fi
 fi
 
 if ! command -v rcup >/dev/null; then
@@ -333,12 +357,21 @@ if ! command -v rcup >/dev/null; then
   brew_install_or_upgrade 'rcm'
 fi
 
+fancy_echo "Installing and updating Python packages"
+pip_install_or_update "pew"
+pip_install_or_update "python-dateutil"
+pip_install_or_update 'coverage'
 
+fancy_echo "Installing Python testing Utilities"
+pip_install_or_update 'selenium'
+pip_install_or_update 'coverage'
+
+brew_install_or_upgrade "chromedriver"
 printf "Do you want to configure your docker container now (y/N): "
 READ CHOICE
 
 if [ "$CHOICE" = 'y' ]; then
-  fancy_echo 'What name would your want for four container: '
+  fancy_echo 'What name would your want for your container: '
   read name
   if [[ "$#" -ne 1 ]]; then
     boot2docker init
@@ -349,6 +382,49 @@ if [ "$CHOICE" = 'y' ]; then
   $(boot2docker shellinit)
 fi
 
+printf "Setup a Virtual Environment (y/N): "
+READ CHOICE
+
+if [ "$CHOICE" = 'y' ]; then
+  fancy_echo 'What name would your want for your virtualenv (env): '
+  read ARG
+  if [[ "$#" -ne 1 ]]; then
+    ARG = env
+    mkvirtualenv "$ARG"
+  else
+    mkvirtualenv "$ARG"
+  fi
+
+  fancy_echo "Which of the following Python web frameworks do you want to deploy:
+   1. Django
+   2. Flask
+   3. TurboGears
+   4. Bluebream / Zope 3
+   5. CherryPy
+   6. Web2Py
+   \n Enter only one number from (1 - 6): "
+  read CHOICE
+  if [[ "$CHOICE" = 1 ]]; then
+    #statements
+    pip install --upgrade 'django'
+  elif [[ "$CHOICE" = 2 ]]; then
+    pip install --upgrade 'flask'
+  elif [[ "$CHOICE" = 3 ]]; then
+    #statements
+    pip install --upgrade 'tg.devtools'
+  elif [[ "$CHOICE" = 4 ]]; then
+    #statements
+    pip install --upgrade 'bluebream'
+  elif [[ "$CHOICE" = 5]]; then
+    #statements
+    pip install --upgrade 'cherrypy'
+  elif [[ "$CHOICE" = 6 ]]; then
+    #statements
+    pip install --upgrade 'web2py'
+  else
+    fancy_echo 'Skipping installation of web frameworks. :)'
+  fi
+fi
 
 if [ -f "$HOME/.laptop.local" ]; then
   . "$HOME/.laptop.local"

@@ -25,7 +25,7 @@ Download, review, then execute the script:
 
 ```sh
 curl --remote-name https://raw.githubusercontent.com/andela-bojengwa/laptop.py/master/mac
-less mac
+less mac #review the content of the script file
 sh mac 2>&1 | tee ~/laptop.log
 ```
 
@@ -134,6 +134,6 @@ brew install shellcheck
 License
 -------
 
-laptop.py is © 2011-2015 Bernard Ojengwa.
+laptop.py is © 2015 Bernard Ojengwa.
  It is free software,
 and may be redistributed under the terms specified in the LICENSE file.
