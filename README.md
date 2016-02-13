@@ -137,3 +137,7 @@ License
 laptop.py is © 2015 Bernard Ojengwa.
  It is free software,
 and may be redistributed under the terms specified in the LICENSE file.
+
+
+[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/ojengwa/laptop.py/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
+
