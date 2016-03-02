@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# Welcome to the andela laptop script!
+# Welcome to the laptop.py script!
 # Be prepared to turn your laptop (or desktop, no haters here)
 # into an awesome development machine.
 
@@ -108,10 +108,10 @@ brew_launchctl_restart() {
 gem_install_or_update() {
   if gem list "$1" --installed > /dev/null; then
     fancy_echo "Updating %s ..." "$1"
-    gem update "$@"
+    sudo gem update "$@"
   else
     fancy_echo "Installing %s ..." "$1"
-    gem install "$@"
+    sudo gem install "$@"
     rbenv rehash
   fi
 }
@@ -184,8 +184,8 @@ pip_install_or_update "pillow"
 pip_install_or_update "hiredis"
 pip_install_or_update "virtualenvwrapper"
 
-gem install 'foreman'
-gem install 'puppet'
+sudo gem install 'foreman'
+sudo gem install 'puppet'
 
 # Configuration options for cloud based services
 printf "Which of the following cloud service(s) do you which to configure: \n
@@ -200,8 +200,6 @@ for CHOICE in $CHOICES ; do
   #statements
   if [[ "$CHOICE" = 1 ]]; then
       fancy_echo 'Installing Google Cloud Utilities'
-
-      brew_install_or_upgrade 'google-app-engine'
 
       curl https://sdk.cloud.google.com | bash
       # pip_install_or_update 'gcloud'
@@ -393,6 +391,7 @@ if [ "$CHOICE" = 'y' ]; then
     mkvirtualenv "$ARG"
   else
     mkvirtualenv "$ARG"
+  workon "$ARG"
   fi
 
   fancy_echo "Which of the following Python web frameworks do you want to deploy:
@@ -410,16 +409,12 @@ if [ "$CHOICE" = 'y' ]; then
   elif [[ "$CHOICE" = 2 ]]; then
     pip install --upgrade 'flask'
   elif [[ "$CHOICE" = 3 ]]; then
-    #statements
     pip install --upgrade 'tg.devtools'
   elif [[ "$CHOICE" = 4 ]]; then
-    #statements
     pip install --upgrade 'bluebream'
   elif [[ "$CHOICE" = 5]]; then
-    #statements
     pip install --upgrade 'cherrypy'
   elif [[ "$CHOICE" = 6 ]]; then
-    #statements
     pip install --upgrade 'web2py'
   else
     fancy_echo 'Skipping installation of web frameworks. :)'
