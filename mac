@@ -392,7 +392,6 @@ if [ "$CHOICE" = 'y' ]; then
    \n Enter only one number from (1 - 6): "
   read CHOICE
   if [[ "$CHOICE" = 1 ]]; then
-    #statements
     pip install --upgrade 'django'
   elif [[ "$CHOICE" = 2 ]]; then
     pip install --upgrade 'flask'
