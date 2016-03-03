@@ -203,6 +203,8 @@ for CHOICE in $CHOICES ; do
 
       curl https://sdk.cloud.google.com | bash
       # pip_install_or_update 'gcloud'
+      brew_install_or_upgrade 'kubernetes-cli'
+      brew_install_or_upgrade 'etcd'
 
   elif [[ "$CHOICE" = 2 ]]; then
     fancy_echo 'Installing Cloud Foundry CLI tools'
@@ -216,6 +218,7 @@ for CHOICE in $CHOICES ; do
 
     fancy_echo "Installing Kubernetes CLI tools"
     brew_install_or_upgrade 'kubernetes-cli'
+    brew_install_or_upgrade 'etcd'
     fancy_echo "Installing AWS CLI tools"
     brew_install_or_upgrade 'awscli'
   else
@@ -268,21 +271,17 @@ for CHOICE in $CHOICES ; do
   if [[ "$CHOICE" = 1 ]]; then
     brew_install_or_upgrade 'mongodb'
     pip_install_or_update 'PyMongo'
-    fancy_echo 'Installing MongoEngine ORM...'
     pip_install_or_update 'mongoengine'
   elif [[ "$CHOICE" = 2 ]]; then
-    fancy_echo 'Installing CouchDB'
     brew_install_or_upgrade 'couchdb'
 
   elif [[ "$CHOICE" = 3 ]]; then
     brew_install_or_upgrade 'orientdb'
 
   elif [[ "$CHOICE" = 4 ]]; then
-    fancy_echo 'Installing DynamoDB'
     brew_install_or_upgrade 'dynamodb-local'
 
   elif [[ "$CHOICE" = 5 ]]; then
-    fancy_echo 'Installing RethinkDB'
     brew_install_or_upgrade 'rethinkdb'
 
   else
@@ -302,10 +301,8 @@ read CHOICES
 for CHOICE in $CHOICES ; do
   #statements
   if [[ "$CHOICE" = 1 ]]; then
-    fancy_echo 'Installing the RabbitMQ'
     brew_install_or_upgrade 'rabbitmq'
   elif [[ "$CHOICE" = 2 ]]; then
-    fancy_echo 'Installing ZeroMQ'
     brew_install_or_upgrade 'zeromq'
 
   elif [[ "$CHOICE" = 3 ]]; then
@@ -378,13 +375,11 @@ READ CHOICE
 
 if [ "$CHOICE" = 'y' ]; then
   fancy_echo 'What name would your want for your virtualenv (env): '
-  read ARG
+  read environ
   if [[ "$#" -ne 1 ]]; then
-    ARG = env
-    mkvirtualenv "$ARG"
+    mkvirtualenv env
   else
-    mkvirtualenv "$ARG"
-  workon "$ARG"
+    mkvirtualenv "$environ"
   fi
 
   fancy_echo "Which of the following Python web frameworks do you want to deploy:
