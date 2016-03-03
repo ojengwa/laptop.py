@@ -258,16 +258,14 @@ printf "Which of the following NoSQL databases do you which to configure: \n
 1. MongoDB (Recommended)
 2. CouchDB
 3. OrientDB
-4. ArrangoDB
-5. DynamoDB
-6. RethinkDB
+4. DynamoDB
+5. RethinkDB
 \nSelect all the number(s) that applies, seperated by a space: "
 
 read CHOICES
 for CHOICE in $CHOICES ; do
   #statements
   if [[ "$CHOICE" = 1 ]]; then
-    fancy_echo 'Installing the MondoDB'
     brew_install_or_upgrade 'mongodb'
     pip_install_or_update 'PyMongo'
     fancy_echo 'Installing MongoEngine ORM...'
@@ -277,18 +275,13 @@ for CHOICE in $CHOICES ; do
     brew_install_or_upgrade 'couchdb'
 
   elif [[ "$CHOICE" = 3 ]]; then
-    fancy_echo 'Installing OrientDB'
     brew_install_or_upgrade 'orientdb'
 
   elif [[ "$CHOICE" = 4 ]]; then
-    fancy_echo 'Installing ArrangoDB'
-    brew_install_or_upgrade 'arrangodb'
-
-  elif [[ "$CHOICE" = 5 ]]; then
     fancy_echo 'Installing DynamoDB'
     brew_install_or_upgrade 'dynamodb-local'
 
-  elif [[ "$CHOICE" = 6 ]]; then
+  elif [[ "$CHOICE" = 5 ]]; then
     fancy_echo 'Installing RethinkDB'
     brew_install_or_upgrade 'rethinkdb'
 
